@@ -1,4 +1,7 @@
 import portrait from './assets/haythi-portrait.jpg'
+import hoteShinDashboard from './assets/hote-shin-dashboard.jpg'
+import hoteShinLogin from './assets/hote-shin-login.jpg'
+import hoteShinWelcome from './assets/hote-shin-welcome.jpg'
 
 const skills = ['Flutter', 'Dart', 'Riverpod', 'Firebase', 'Python', 'Django']
 
@@ -126,6 +129,79 @@ function Skills() {
   )
 }
 
+const hoteShinScreens = [
+  {
+    className: 'welcome-project-phone',
+    image: hoteShinWelcome,
+    alt: 'HoteShin welcome screen',
+    label: 'Welcome',
+  },
+  {
+    className: 'dashboard-project-phone',
+    image: hoteShinDashboard,
+    alt: 'HoteShin real-time dashboard',
+    label: 'Real-time dashboard',
+  },
+  {
+    className: 'login-project-phone',
+    image: hoteShinLogin,
+    alt: 'HoteShin fingerprint login screen',
+    label: 'Secure login',
+  },
+]
+
+function Projects() {
+  return (
+    <section className="projects-section" id="work" aria-labelledby="projects-title">
+      <header className="projects-heading">
+        <div>
+          <p className="section-kicker">Selected Flutter work</p>
+          <h2 id="projects-title">Mobile products with <em>purpose.</em></h2>
+        </div>
+        <p className="projects-lead">
+          A selection of <strong>real-world Flutter applications</strong> shaped by thoughtful architecture,
+          reliable integrations, and interfaces designed for everyday use.
+        </p>
+      </header>
+
+      <article className="featured-project">
+        <div className="project-copy">
+          <span className="project-index">Featured project · 01</span>
+          <h3>HoteShin<br />Pawn Shop</h3>
+          <p>
+            A Flutter application created to digitize loan management, renewals, redemptions, record lookup,
+            and overdue reminders for a local business.
+          </p>
+          <ul className="project-points">
+            <li>Real-time records with Cloud Firestore</li>
+            <li>QR scanning and biometric authentication</li>
+            <li>English and Myanmar localization</li>
+          </ul>
+          <ul className="project-tags" aria-label="HoteShin technologies">
+            {['Flutter', 'Riverpod', 'Firebase', 'Unit Testing'].map((tag) => <li key={tag}>{tag}</li>)}
+          </ul>
+        </div>
+
+        <div className="project-stage" aria-label="HoteShin application screens">
+          <div className="project-orbit" aria-hidden="true" />
+          <div className="project-floating-label project-ui-label"><span>✦</span> Real application UI</div>
+          <div className="project-phones">
+            {hoteShinScreens.map((screen) => (
+              <figure className={`project-phone ${screen.className}`} key={screen.label}>
+                <div className="project-phone-screen">
+                  <img src={screen.image} alt={screen.alt} />
+                  <figcaption>{screen.label}</figcaption>
+                </div>
+              </figure>
+            ))}
+          </div>
+          <div className="project-floating-label project-reliable-label"><span>♥</span> Secure &amp; reliable</div>
+        </div>
+      </article>
+    </section>
+  )
+}
+
 export default function App() {
   return (
     <div className="page-shell">
@@ -133,6 +209,7 @@ export default function App() {
       <main>
         <Hero />
         <Skills />
+        <Projects />
       </main>
     </div>
   )
