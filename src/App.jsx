@@ -1,7 +1,12 @@
+import { useEffect, useRef, useState } from 'react'
 import portrait from './assets/haythi-portrait.jpg'
 import hoteShinDashboard from './assets/hote-shin-dashboard.jpg'
 import hoteShinLogin from './assets/hote-shin-login.jpg'
 import hoteShinWelcome from './assets/hote-shin-welcome.jpg'
+import weatherCurrent from './assets/weather-current.png'
+import weatherForecast from './assets/weather-forecast.png'
+import weatherSearch from './assets/weather-search.png'
+import weatherSnowy from './assets/weather-snowy.png'
 
 const skills = ['Flutter', 'Dart', 'Riverpod', 'Firebase', 'Python', 'Django']
 
@@ -75,11 +80,37 @@ function Portrait() {
 }
 
 function Hero() {
+  const heroRef = useRef(null)
+  const [nameIsVisible, setNameIsVisible] = useState(false)
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window)) {
+      setNameIsVisible(true)
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setNameIsVisible(entry.isIntersecting),
+      { threshold: 0.22 },
+    )
+
+    if (heroRef.current) observer.observe(heroRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className="hero" id="home">
+    <section className={`hero${nameIsVisible ? ' is-visible' : ''}`} id="home" ref={heroRef}>
       <section className="hero-copy" aria-labelledby="hero-title">
-        <p className="eyebrow"><span /> Hello, I&apos;m Khant Hay Thi Tun</p>
-        <h1 id="hero-title">I build mobile experiences<em>that feel effortless.</em></h1>
+        <p className="eyebrow"><span /> Flutter Developer · Mobile Engineer</p>
+        <h1 id="hero-title" className="hero-title">
+          <span className="hero-name" aria-label="Khant Hay Thi Tun">
+            <span className="name-line name-line-single">
+              <span><span className="name-first">Khant</span> <span className="name-accent">Hay Thi</span> <span className="name-first">Tun.</span></span>
+            </span>
+          </span>
+          <span className="hero-promise">I build mobile experiences</span>
+          <em>that feel effortless.</em>
+        </h1>
         <p className="hero-intro">
           I&apos;m a mobile developer specializing in <strong>Flutter</strong>, building polished and maintainable
           applications that solve real-world problems. My experience with <strong>Python, Django, and modern web
@@ -150,6 +181,111 @@ const hoteShinScreens = [
   },
 ]
 
+const weatherScreens = [
+  { image: weatherCurrent, label: 'Weather display', alt: 'Sky Cast cloudy weather screen for Yangon' },
+  { image: weatherForecast, label: '5-day forecast', alt: 'Sky Cast detailed five-day forecast screen' },
+  { image: weatherSearch, label: 'Search with geolocation', alt: 'Sky Cast city search screen' },
+  { image: weatherSnowy, label: 'Weather display', alt: 'Sky Cast snowy weather screen for Berlin' },
+]
+
+function WeatherPhone() {
+  const [activeScreen, setActiveScreen] = useState(0)
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reducedMotion.matches) return undefined
+
+    const interval = window.setInterval(() => {
+      setActiveScreen((screen) => (screen + 1) % weatherScreens.length)
+    }, 3800)
+
+    return () => window.clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="weather-stage">
+      <div className="weather-orbit" aria-hidden="true" />
+      <div className="weather-phone" aria-label="Sky Cast application screens">
+        <div className="weather-phone-screen">
+          {weatherScreens.map((screen, index) => (
+            <img
+              className={`weather-slide weather-slide-${index + 1}${index === activeScreen ? ' is-active' : ''}`}
+              src={screen.image}
+              alt={index === activeScreen ? screen.alt : ''}
+              aria-hidden={index !== activeScreen}
+              key={screen.label}
+            />
+          ))}
+        </div>
+      </div>
+      <span className="screen-live-label weather-live-label" aria-live="polite">
+        <span key={activeScreen}>{weatherScreens[activeScreen].label}</span>
+      </span>
+    </div>
+  )
+}
+
+const inTrackScreenLabels = ['Attendance dashboard', 'Attendance history', 'Leave request']
+
+function InTrackPhone() {
+  const [activeScreen, setActiveScreen] = useState(0)
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reducedMotion.matches) return undefined
+
+    const interval = window.setInterval(() => {
+      setActiveScreen((screen) => (screen + 1) % inTrackScreenLabels.length)
+    }, 3800)
+
+    return () => window.clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="secondary-phone-stage intrack-stage">
+      <div className="concept-phone" aria-label="Original portfolio illustrations of iNTrack attendance features">
+        <div className="concept-phone-screen">
+          <div className={`intrack-concept-slide dashboard-concept${activeScreen === 0 ? ' is-active' : ''}`} aria-hidden={activeScreen !== 0}>
+            <div className="intrack-status"><span>9:41</span><i /></div>
+            <div className="intrack-blue-head"><span>☰</span><b>●</b><strong>9:41 AM</strong><small>Friday, August 29</small></div>
+            <div className="intrack-check-state"><i>✓</i><span>Checked in</span><time>09:02</time></div>
+            <div className="intrack-swipe"><b>↗</b><span>Slide to check out</span><i>››</i></div>
+            <strong className="intrack-section-title">Attendance History</strong>
+            <div className="intrack-stats"><span><b>22</b>Present</span><span><b>2</b>Late</span><span><b>1</b>Leave</span></div>
+            <div className="intrack-record"><b>August 29, Friday</b><span>Check-in 09:02 · On time</span></div>
+          </div>
+
+          <div className={`intrack-concept-slide history-concept${activeScreen === 1 ? ' is-active' : ''}`} aria-hidden={activeScreen !== 1}>
+            <div className="intrack-status light"><span>9:42</span><i /></div>
+            <div className="history-head"><span>☰</span><b>Attendance History</b><i>●</i></div>
+            <div className="history-filters"><span>August⌄</span><span>2025⌄</span><span>All⌄</span></div>
+            <div className="history-week"><b>S</b><b>M</b><b>T</b><b>W</b><b>T</b><b>F</b><b>S</b></div>
+            <div className="history-days">{['27','28','29','30','31','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'].map((day, index) => <span className={index === 33 ? 'selected' : index === 11 ? 'leave' : index % 6 === 0 ? 'late' : ''} key={`${day}-${index}`}>{day}</span>)}</div>
+            <div className="history-legend"><span>■ Present</span><span>■ Leave</span><span>■ Late</span></div>
+            <div className="history-card"><b>August 29, Friday</b><span>Check-in 09:02 · Late</span></div>
+          </div>
+
+          <div className={`intrack-concept-slide leave-concept${activeScreen === 2 ? ' is-active' : ''}`} aria-hidden={activeScreen !== 2}>
+            <div className="intrack-status light"><span>9:43</span><i /></div>
+            <div className="leave-head"><span>☰</span><i>●</i></div>
+            <div className="leave-sheet">
+              <div className="leave-tabs"><b>Leave Request</b><span>Attendance Request</span></div>
+              <label>Leave duration</label><div className="leave-options"><span>◉ Single day</span><span>○ Multiple days</span></div>
+              <label>Leave type</label><div className="leave-field">Select type <b>⌄</b></div>
+              <label>Leave date</label><div className="leave-field">Select date <b>▣</b></div>
+              <label>Leave time</label><div className="leave-options"><span>○ AM</span><span>○ PM</span><span>○ Full day</span></div>
+              <label>Reason of leave</label><div className="leave-reason">Write your reason...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span className="screen-live-label concept-note" aria-live="polite">
+        <span key={activeScreen}>Original illustration · {inTrackScreenLabels[activeScreen]}</span>
+      </span>
+    </div>
+  )
+}
+
 function Projects() {
   return (
     <section className="projects-section" id="work" aria-labelledby="projects-title">
@@ -198,6 +334,42 @@ function Projects() {
           <div className="project-floating-label project-reliable-label"><span>♥</span> Secure &amp; reliable</div>
         </div>
       </article>
+
+      <div className="secondary-projects">
+        <article className="secondary-project-card intrack-project-card">
+          <div className="secondary-project-copy">
+            <span className="project-index">Project · 02</span>
+            <span className="project-role">Sole Flutter Developer · Internship Project</span>
+            <h3>iNTrack</h3>
+            <p>Employee attendance, check-in, leave requests, and profile management in one focused mobile experience.</p>
+            <ul className="project-feature-pills" aria-label="iNTrack features">
+              {['Attendance', 'Leave Requests', 'Profile'].map((feature) => <li key={feature}>{feature}</li>)}
+            </ul>
+            <span className="tech-stack-label">Tech stack</span>
+            <ul className="project-tags" aria-label="iNTrack technologies">
+              {['Flutter', 'Riverpod', 'REST API'].map((tag) => <li key={tag}>{tag}</li>)}
+            </ul>
+          </div>
+          <InTrackPhone />
+        </article>
+
+        <article className="secondary-project-card weather-project-card">
+          <div className="secondary-project-copy">
+            <span className="project-index">Project · 03</span>
+            <span className="project-role project-role-placeholder" aria-hidden="true">Sole Flutter Developer · Internship Project</span>
+            <h3>Sky Cast</h3>
+            <p>City search, current conditions, and detailed forecasts presented in a colorful Flutter weather experience.</p>
+            <ul className="project-feature-pills" aria-label="Sky Cast features">
+              {['Geolocation Search', 'Weather Display', '5-Day Forecast'].map((feature) => <li key={feature}>{feature}</li>)}
+            </ul>
+            <span className="tech-stack-label">Tech stack</span>
+            <ul className="project-tags" aria-label="Sky Cast technologies">
+              {['Flutter', 'Dart', 'Riverpod', 'Dio', 'REST API', 'Clean Architecture', 'Performance', 'State Management'].map((tag) => <li key={tag}>{tag}</li>)}
+            </ul>
+          </div>
+          <WeatherPhone />
+        </article>
+      </div>
     </section>
   )
 }
